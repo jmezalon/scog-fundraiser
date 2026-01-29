@@ -117,7 +117,7 @@ export default function Home() {
 
   if (orderComplete) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -157,26 +157,26 @@ export default function Home() {
           <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-600 rounded-full blur-3xl" />
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-6 py-16 md:py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="flex items-center justify-center gap-3 mb-4"
+              className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-4"
             >
-              <Church className="w-8 h-8 text-amber-400" />
-              <span className="text-amber-400 uppercase tracking-widest text-sm font-medium">
+              <Church className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400" />
+              <span className="text-amber-400 uppercase tracking-[0.2em] text-[0.7rem] sm:text-sm font-medium">
                 Building Fund Fundraiser
               </span>
-              <Church className="w-8 h-8 text-amber-400" />
+              <Church className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400" />
             </motion.div>
             
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4"
+              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-3 sm:mb-4"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               <span className="text-amber-400">Salvation</span> Church of God
@@ -186,7 +186,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl md:text-2xl text-zinc-300 mb-6 max-w-2xl mx-auto"
+              className="text-base sm:text-xl md:text-2xl text-zinc-300 mb-6 max-w-2xl mx-auto"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               Official Hoodie Collection
@@ -196,7 +196,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/30 rounded-full px-6 py-3"
+              className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/30 rounded-full px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base"
             >
               <Sparkles className="w-5 h-5 text-amber-400" />
               <span className="text-amber-200 font-medium" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -210,37 +210,37 @@ export default function Home() {
 
       {/* Mission Banner */}
       <section className="bg-primary text-primary-foreground py-4">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-center gap-4 text-center">
-            <Heart className="w-5 h-5 flex-shrink-0" />
-            <p className="text-sm md:text-base font-medium">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
+            <Heart className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+            <p className="text-sm sm:text-base font-medium">
               All proceeds support our new church location currently under construction
             </p>
-            <Heart className="w-5 h-5 flex-shrink-0" />
+            <Heart className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
           </div>
         </div>
       </section>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12 md:py-16">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-10 sm:py-12 md:py-16">
+        <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16 min-w-0">
           
           {/* Product Gallery */}
-          <div className="space-y-6">
+          <div className="space-y-6 min-w-0">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden w-full max-w-[420px] sm:max-w-none mx-auto">
                 <CardContent className="p-0 relative">
-                  <div className="aspect-square bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center p-8">
+                  <div className="aspect-square bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center p-3 sm:p-8">
                     <AnimatePresence mode="wait">
                       <motion.img
                         key={selectedImageIndex}
                         src={selectedColor && HOODIE_IMAGES[selectedColor] ? HOODIE_IMAGES[selectedColor] : availableImages[selectedImageIndex]}
                         alt={`Salvation Church of God official hoodie in ${selectedColor ? HOODIE_COLORS.find(c => c.value === selectedColor)?.name || 'selected color' : ['Black', 'Red', 'Navy Blue'][selectedImageIndex]} - front and back view with gold "God Did It" logo`}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain max-w-[340px] sm:max-w-none"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
@@ -252,11 +252,11 @@ export default function Home() {
                   
                   {/* Navigation Arrows */}
                   {!selectedColor && (
-                    <div className="absolute inset-x-0 bottom-4 flex items-center justify-between px-6">
+                    <div className="absolute inset-x-0 bottom-3 sm:bottom-4 flex items-center justify-between px-4 sm:px-6">
                       <Button
                         size="icon"
                         variant="secondary"
-                        className="rounded-full opacity-80"
+                        className="rounded-full opacity-90 h-10 w-10 sm:h-11 sm:w-11"
                         onClick={prevImage}
                         data-testid="button-prev-image"
                       >
@@ -265,7 +265,7 @@ export default function Home() {
                       <Button
                         size="icon"
                         variant="secondary"
-                        className="rounded-full opacity-80"
+                        className="rounded-full opacity-90 h-10 w-10 sm:h-11 sm:w-11"
                         onClick={nextImage}
                         data-testid="button-next-image"
                       >
@@ -277,7 +277,7 @@ export default function Home() {
               </Card>
 
               {/* Thumbnail Gallery */}
-              <div className="flex gap-3 justify-center">
+              <div className="flex gap-3 justify-start sm:justify-center overflow-x-auto px-1 pb-1 snap-x snap-mandatory max-w-[420px] sm:max-w-none mx-auto overscroll-x-contain">
                 {availableImages.map((img, idx) => {
                   const colorNames = ["Black", "Red", "Navy Blue"];
                   return (
@@ -288,7 +288,7 @@ export default function Home() {
                         form.setValue("color", "");
                       }}
                       aria-label={`View ${colorNames[idx]} hoodie`}
-                      className={`w-20 h-20 rounded-md overflow-hidden border-2 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+                      className={`w-20 h-20 rounded-md overflow-hidden border-2 transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 snap-start ${
                         selectedImageIndex === idx && !selectedColor
                           ? "border-primary ring-2 ring-primary/20"
                           : "border-border opacity-60 hover:opacity-100"
@@ -308,7 +308,7 @@ export default function Home() {
 
             {/* Product Info */}
             <div className="space-y-4">
-              <div className="flex items-baseline gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
                 <span className="text-4xl font-bold text-primary" style={{ fontFamily: "'Playfair Display', serif" }}>
                   ${HOODIE_PRICE}
                 </span>
@@ -329,9 +329,10 @@ export default function Home() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="min-w-0"
           >
-            <Card>
-              <CardContent className="p-6 md:p-8">
+            <Card className="w-full">
+              <CardContent className="p-5 sm:p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <ShoppingBag className="w-6 h-6 text-primary" />
                   <h2 className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -348,7 +349,7 @@ export default function Home() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Select Color</FormLabel>
-                          <div className="grid grid-cols-3 gap-3">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             {HOODIE_COLORS.map((color) => (
                               <button
                                 key={color.value}
@@ -356,7 +357,7 @@ export default function Home() {
                                 onClick={() => field.onChange(color.value)}
                                 aria-label={`Select ${color.name} color`}
                                 aria-pressed={field.value === color.value}
-                                className={`relative p-3 rounded-md border-2 transition-all flex flex-col items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+                                className={`relative p-3 rounded-md border-2 transition-all flex flex-col items-center gap-2 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                                   field.value === color.value
                                     ? "border-primary bg-primary/5"
                                     : "border-border hover:border-primary/50"
@@ -427,6 +428,7 @@ export default function Home() {
                               type="button"
                               variant="outline"
                               size="icon"
+                              className="h-10 w-10"
                               onClick={() => field.onChange(Math.max(1, field.value - 1))}
                               disabled={field.value <= 1}
                               data-testid="button-quantity-decrease"
@@ -440,6 +442,7 @@ export default function Home() {
                               type="button"
                               variant="outline"
                               size="icon"
+                              className="h-10 w-10"
                               onClick={() => field.onChange(Math.min(10, field.value + 1))}
                               disabled={field.value >= 10}
                               data-testid="button-quantity-increase"
@@ -455,7 +458,7 @@ export default function Home() {
                     {/* Contact Information */}
                     <div className="border-t border-border pt-6">
                       <h3 className="font-semibold mb-4">Contact Information</h3>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
                           name="firstName"
@@ -569,14 +572,16 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-zinc-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h3 className="text-2xl font-bold mb-2 text-amber-400" style={{ fontFamily: "'Playfair Display', serif" }}>
+      <footer className="bg-zinc-900 text-white py-10 sm:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center space-y-2">
+          <h3 className="text-xl sm:text-2xl font-bold text-amber-400" style={{ fontFamily: "'Playfair Display', serif" }}>
             Salvation Church of God
           </h3>
           <a
             href="https://salvation-church-puce.vercel.app"
-            className="text-amber-300 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-amber-300 hover:underline break-words inline-block"
           >
             www.salvationchurchofgod.com
           </a>
