@@ -30,14 +30,17 @@ import { apiRequest } from "@/lib/queryClient";
 import blackHoodie from "@assets/scog-hoodies-black_1769651448789.png";
 import redHoodie from "@assets/scog-hoodies-red_1769651461012.png";
 import navyHoodie from "@assets/scog-hoodies-navie-blue_1769651469388.png";
+import darkGreyHoodie from "@assets/scog-hoodie-gray.png";
+import sapphireBlueHoodie from "@assets/scog-hoodie-blue.png";
+import purpleHoodie from "@assets/scog-hoodie-purple.png";
 
 const HOODIE_IMAGES: Record<string, string> = {
   "black": blackHoodie,
   "red": redHoodie,
   "navy-blue": navyHoodie,
-  "dark-grey": blackHoodie,
-  "sapphire-blue": navyHoodie,
-  "purple": blackHoodie,
+  "dark-grey": darkGreyHoodie,
+  "sapphire-blue": sapphireBlueHoodie,
+  "purple": purpleHoodie,
 };
 
 const orderFormSchema = z.object({
@@ -57,7 +60,7 @@ export default function Home() {
   const [orderComplete, setOrderComplete] = useState(false);
   const { toast } = useToast();
 
-  const availableImages = [blackHoodie, redHoodie, navyHoodie];
+  const availableImages = [blackHoodie, redHoodie, navyHoodie, darkGreyHoodie, sapphireBlueHoodie, purpleHoodie];
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderFormSchema),
@@ -249,11 +252,11 @@ export default function Home() {
                   
                   {/* Navigation Arrows */}
                   {!selectedColor && (
-                    <>
+                    <div className="absolute inset-x-0 bottom-4 flex items-center justify-between px-6">
                       <Button
                         size="icon"
                         variant="secondary"
-                        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full opacity-80"
+                        className="rounded-full opacity-80"
                         onClick={prevImage}
                         data-testid="button-prev-image"
                       >
@@ -262,13 +265,13 @@ export default function Home() {
                       <Button
                         size="icon"
                         variant="secondary"
-                        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full opacity-80"
+                        className="rounded-full opacity-80"
                         onClick={nextImage}
                         data-testid="button-next-image"
                       >
                         <ChevronRight className="w-5 h-5" />
                       </Button>
-                    </>
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -571,7 +574,12 @@ export default function Home() {
           <h3 className="text-2xl font-bold mb-2 text-amber-400" style={{ fontFamily: "'Playfair Display', serif" }}>
             Salvation Church of God
           </h3>
-          <p className="text-zinc-400 mb-4">www.salvationcog.org</p>
+          <a
+            href="https://salvation-church-puce.vercel.app"
+            className="text-amber-300 hover:underline"
+          >
+            www.salvationchurchofgod.com
+          </a>
           <p className="text-amber-300 font-medium" style={{ fontFamily: "'Playfair Display', serif" }}>
             "God Did It!"
           </p>
