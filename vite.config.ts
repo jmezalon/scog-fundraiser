@@ -32,18 +32,6 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (!id.includes("node_modules")) return;
-          if (id.includes("react")) return "react";
-          if (id.includes("@tanstack")) return "tanstack";
-          if (id.includes("framer-motion")) return "motion";
-          if (id.includes("lucide-react")) return "icons";
-          return "vendor";
-        },
-      },
-    },
   },
   server: {
     fs: {
