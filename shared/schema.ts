@@ -16,6 +16,16 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
+// Cart item schema
+export const cartItemSchema = z.object({
+  color: z.string(),
+  size: z.string(),
+  quantity: z.number().min(1).max(10),
+  pricePerUnit: z.number(),
+});
+
+export type CartItem = z.infer<typeof cartItemSchema>;
+
 // Hoodie order schema
 export const orders = pgTable("orders", {
   id: varchar("id", { length: 36 }).primaryKey(),
@@ -23,9 +33,7 @@ export const orders = pgTable("orders", {
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
-  color: text("color").notNull(),
-  size: text("size").notNull(),
-  quantity: integer("quantity").notNull().default(1),
+  items: text("items").notNull(), // JSON stringified array of CartItem[]
   totalPrice: integer("total_price").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -37,6 +45,18 @@ export const insertOrderSchema = createInsertSchema(orders).omit({
 
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+
+// Checkout schema for order submission
+export const checkoutSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Please enter a valid email"),
+  phone: z.string().min(10, "Please enter a valid phone number"),
+  items: z.array(cartItemSchema).min(1, "Cart cannot be empty"),
+  totalPrice: z.number().min(1),
+});
+
+export type CheckoutData = z.infer<typeof checkoutSchema>;
 
 // Available hoodie options
 export const HOODIE_COLORS = [

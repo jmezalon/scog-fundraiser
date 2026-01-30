@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Minus, Plus, ShoppingBag, ChevronLeft, ChevronRight, Church, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,14 +24,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/contexts/CartContext";
+import { CartButton } from "@/components/cart/CartButton";
 import { HOODIE_COLORS, HOODIE_SIZES, HOODIE_PRICE } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
 import blackHoodie from "@assets/scog-hoodies-black_1769651448789.png";
 import redHoodie from "@assets/scog-hoodies-red_1769651461012.png";
 import navyHoodie from "@assets/scog-hoodies-navie-blue_1769651469388.png";
 import darkGreyHoodie from "@assets/scog-hoodie-gray.png";
 import sapphireBlueHoodie from "@assets/scog-hoodie-blue.png";
 import purpleHoodie from "@assets/scog-hoodie-purple.png";
+import churchLogo from "@assets/Yellow Horizontal.png";
 
 const HOODIE_IMAGES: Record<string, string> = {
   "black": blackHoodie,
@@ -43,32 +44,24 @@ const HOODIE_IMAGES: Record<string, string> = {
   "purple": purpleHoodie,
 };
 
-const orderFormSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Please enter a valid email"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
+const addToCartFormSchema = z.object({
   color: z.string().min(1, "Please select a color"),
   size: z.string().min(1, "Please select a size"),
   quantity: z.number().min(1).max(10),
 });
 
-type OrderFormData = z.infer<typeof orderFormSchema>;
+type AddToCartFormData = z.infer<typeof addToCartFormSchema>;
 
 export default function Home() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [orderComplete, setOrderComplete] = useState(false);
   const { toast } = useToast();
+  const { addItem } = useCart();
 
   const availableImages = [blackHoodie, redHoodie, navyHoodie, darkGreyHoodie, sapphireBlueHoodie, purpleHoodie];
 
-  const form = useForm<OrderFormData>({
-    resolver: zodResolver(orderFormSchema),
+  const form = useForm<AddToCartFormData>({
+    resolver: zodResolver(addToCartFormSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
       color: "",
       size: "",
       quantity: 1,
@@ -77,34 +70,18 @@ export default function Home() {
 
   const selectedColor = form.watch("color");
   const quantity = form.watch("quantity");
-  const totalPrice = HOODIE_PRICE * quantity;
+  const itemTotal = HOODIE_PRICE * quantity;
 
-  const submitOrder = useMutation({
-    mutationFn: async (data: OrderFormData) => {
-      const response = await apiRequest("POST", "/api/orders", {
-        ...data,
-        totalPrice: totalPrice,
-      });
-      return response;
-    },
-    onSuccess: () => {
-      setOrderComplete(true);
-      toast({
-        title: "Order Submitted!",
-        description: "Thank you for supporting our church's new location.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "There was a problem submitting your order. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
+  const onSubmit = (data: AddToCartFormData) => {
+    addItem(data.color, data.size, data.quantity);
 
-  const onSubmit = (data: OrderFormData) => {
-    submitOrder.mutate(data);
+    toast({
+      title: "Added to Cart!",
+      description: `${quantity} ${HOODIE_COLORS.find(c => c.value === data.color)?.name} hoodie${quantity > 1 ? 's' : ''} added to your cart.`,
+    });
+
+    // Optionally reset the form or keep selections for quick re-add
+    // form.reset(); // Uncomment to clear selections after add
   };
 
   const nextImage = () => {
@@ -114,38 +91,6 @@ export default function Home() {
   const prevImage = () => {
     setSelectedImageIndex((prev) => (prev - 1 + availableImages.length) % availableImages.length);
   };
-
-  if (orderComplete) {
-    return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center max-w-md"
-        >
-          <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
-            <Check className="w-10 h-10 text-primary-foreground" />
-          </div>
-          <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }} role="status" aria-live="polite">
-            Order Confirmed!
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            Thank you for supporting Salvation Church of God's building fund. We'll contact you soon with pickup details.
-          </p>
-          <p className="text-2xl font-semibold text-gold mb-8">God Did It!</p>
-          <Button
-            onClick={() => {
-              setOrderComplete(false);
-              form.reset();
-            }}
-            data-testid="button-new-order"
-          >
-            Place Another Order
-          </Button>
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -172,15 +117,18 @@ export default function Home() {
               <Church className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400" />
             </motion.div>
             
-            <motion.h1
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-3 sm:mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              className="mb-3 sm:mb-4 flex justify-center"
             >
-              <span className="text-amber-400">Salvation</span> Church of God
-            </motion.h1>
+              <img
+                src={churchLogo}
+                alt="Salvation Church of God"
+                className="h-16 sm:h-20 md:h-24 lg:h-28 w-auto"
+              />
+            </motion.div>
             
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -455,113 +403,26 @@ export default function Home() {
                       )}
                     />
 
-                    {/* Contact Information */}
-                    <div className="border-t border-border pt-6">
-                      <h3 className="font-semibold mb-4">Contact Information</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="firstName"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>First Name</FormLabel>
-                              <FormControl>
-                                <Input placeholder="John" {...field} data-testid="input-first-name" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="lastName"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Last Name</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Doe" {...field} data-testid="input-last-name" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
-
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="email" 
-                              placeholder="john@example.com" 
-                              {...field} 
-                              data-testid="input-email"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="tel" 
-                              placeholder="(555) 123-4567" 
-                              {...field} 
-                              data-testid="input-phone"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    {/* Order Summary */}
+                    {/* Item Summary */}
                     <div className="bg-muted/50 rounded-lg p-4 space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Subtotal ({quantity} item{quantity > 1 ? "s" : ""})</span>
-                        <span>${totalPrice}.00</span>
-                      </div>
-                      <div className="border-t border-border my-2" />
-                      <div className="flex justify-between font-semibold text-lg">
-                        <span>Total</span>
-                        <span className="text-primary" data-testid="text-total-price">${totalPrice}.00</span>
+                        <span className="text-muted-foreground">Item Price ({quantity} item{quantity > 1 ? "s" : ""})</span>
+                        <span>${itemTotal}.00</span>
                       </div>
                     </div>
 
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
+                    <Button
+                      type="submit"
+                      className="w-full"
                       size="lg"
-                      disabled={submitOrder.isPending}
-                      data-testid="button-submit-order"
+                      data-testid="button-add-to-cart"
                     >
-                      {submitOrder.isPending ? (
-                        <span className="flex items-center gap-2">
-                          <motion.span
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="block w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full"
-                          />
-                          Processing...
-                        </span>
-                      ) : (
-                        "Submit Order"
-                      )}
+                      <ShoppingBag className="w-5 h-5 mr-2" />
+                      Add to Cart
                     </Button>
 
                     <p className="text-xs text-center text-muted-foreground">
-                      Payment will be collected at pickup. We'll contact you with pickup details.
+                      Add items to cart, then checkout when ready. Payment collected at pickup.
                     </p>
                   </form>
                 </Form>
@@ -590,6 +451,9 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+      {/* Floating Cart Button */}
+      <CartButton />
     </div>
   );
 }
