@@ -6,6 +6,6 @@ vite.config.ts.*
 *.tar.gz
 # Local state
 .local/
-
+.env
 # Local state
 .local/

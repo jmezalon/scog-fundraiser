@@ -41,6 +41,8 @@ export class MemStorage implements IStorage {
     const order: Order = {
       ...insertOrder,
       id,
+      paymentIntentId: insertOrder.paymentIntentId ?? null,
+      paymentStatus: insertOrder.paymentStatus ?? "pending",
       createdAt: new Date(),
     };
     this.orders.set(id, order);

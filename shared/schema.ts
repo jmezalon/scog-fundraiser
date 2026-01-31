@@ -35,6 +35,8 @@ export const orders = pgTable("orders", {
   phone: text("phone").notNull(),
   items: text("items").notNull(), // JSON stringified array of CartItem[]
   totalPrice: integer("total_price").notNull(),
+  paymentIntentId: text("payment_intent_id"),
+  paymentStatus: text("payment_status").default("pending"), // pending, paid, failed
   createdAt: timestamp("created_at").defaultNow(),
 });
 
